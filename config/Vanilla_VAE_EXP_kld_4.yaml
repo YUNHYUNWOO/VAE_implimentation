@@ -1,0 +1,42 @@
+seed: 1265
+model:
+  name: 'Vanilla_VAE'
+  model_params:
+    in_channels: 3
+    latent_shape: 64
+    hidden_channels: 
+      - 3
+      - 32
+      - 64
+      - 128
+      - 256
+    input_shape:
+      - 48
+      - 48
+    resBlock_depth: 2
+    conv_per_resBlock: 2
+    recon_loss_type: "bce"
+    kld_weight: 4
+
+data:
+  name: "CelebA"
+  data_path: "data/celeba-small-images-dataset"
+  train_batch_size: 256
+  val_batch_size:  128
+  # should match with model's end_point
+  patch_size: 48
+  num_workers: 4
+  pin_memory: true
+
+trainer:
+  device: "cuda"
+  max_epochs: 20
+  optim:
+      lr: 0.0003
+      weight_decay: 0.0
+  logging:
+    name: "VAE"
+    logging_step: 100
+  checkpoint:
+    save_dir: "./ckpt"
+    save_name: "Vanilla_VAE_EXP_kld_4"
