@@ -4,11 +4,14 @@ This repository is a structured pipeline for training a **Variational Autoencode
 
 **FID (Fréchet Inception Distance)** evaluation and **WandB** logging is provided.
 
-We took several experiments and archived it on wandb projects.
+I conducted simple experiments by varying the **KLD weight ($\beta$ of $\beta$-VAE)**, observed that reconstruction quality and sample diversity decreased as the value of $\beta$ was increased. 
+
+All results and logs are archived in our WandB project:
 
 You can see the results in https://wandb.ai/hyunwoo629-hanyang-university/VAEs.
 
 <img width="1548" height="217" alt="image" src="https://github.com/user-attachments/assets/05f578ca-d8a0-4f78-90fe-8b0ef865acc5" />
+  
 ---
 
 ## 1. Project Architecture
@@ -47,6 +50,7 @@ docker run --gpus all -it --rm \
 2. Ensure the **Dev Containers** extension is installed.
 3.  Press `Ctrl` + `Shift` + `P` and select **"Reopen in Container"**.
 4. The environment will be automatically built and configured based on the `.devcontainer` settings.
+
 
 Once the setup is complete, **make sure to update the .env file with your WandB project details.**
 
