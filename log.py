@@ -8,7 +8,7 @@ from torch.utils.data import TensorDataset
 from torchvision.transforms.functional import to_pil_image
 import wandb
 
-from util.FID_calculator import FID_calculator
+from FID_calculator import FID_calculator
 from model import Vanilla_VAE
 
 

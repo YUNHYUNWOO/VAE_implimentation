@@ -6,3 +6,4 @@ torchsummary>=1.5.1
 wandb
 kaggle
 pytorch-fid>=0.3.0
+dotenv

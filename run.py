@@ -9,18 +9,13 @@ import yaml
 import wandb
 import functools
 
-from util.FID_calculator import FID_calculator
+from dotenv  import load_dotenv
 
+from FID_calculator import FID_calculator
 from model import Vanilla_VAE
 from trainer import VAE_Trainer
-from dataset import DataPipeline
+from data import DataPipeline
 from log import get_train_log_fn, get_test_log_fn
-
-
-import os
-import random
-import numpy as np
-import torch
 
 CONFIG_DIR = "./config/"
 parser = argparse.ArgumentParser()
@@ -43,6 +38,7 @@ def main():
    args = parser.parse_args()
    # load config file
    
+
    with open(os.path.join(CONFIG_DIR, f"{args.EXP_NAME}.yaml"), "r") as file:
       config = yaml.safe_load(file)  # Use safe_load to prevent execution of arbitrary Python objects
 
@@ -85,7 +81,13 @@ def main():
                          config=config['trainer']
                          )
 
-   with wandb.init(project="VAEs", entity="hyunwoo629-hanyang-university", config=config, name=args.EXP_NAME):
+   load_dotenv()
+   project = os.getenv("WANDB_PROJECT")
+   entity = os.getenv("WANDB_ENTITY")
+   print("wandb_project:", project)
+   print("wandb_entity:", entity)
+
+   with wandb.init(project=project, entity=entity, config=config, name=args.EXP_NAME):
       trainer.train()
 
 if __name__ == '__main__':

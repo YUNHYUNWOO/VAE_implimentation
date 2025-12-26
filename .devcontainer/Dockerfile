@@ -3,7 +3,7 @@ FROM pytorch/pytorch:2.7.0-cuda12.8-cudnn9-devel
 
 RUN apt-get update && apt-get install -y sudo
 
-COPY requirements.txt .
+COPY ./.devcontainer/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 ARG USERNAME=user
