@@ -1,16 +1,12 @@
 # base image는 pytorch
 FROM pytorch/pytorch:2.7.0-cuda12.8-cudnn9-devel
 
-RUN apt-get update
-RUN apt-get install -y sudo ssh openssh-server
-RUN apt-get install -y git && \
-    git config --global user.name "HYUNWOOYUN" && \
-    git config --global user.email "hyunwoo629@hanyang.ac.kr"
+RUN apt-get update && apt-get install -y sudo
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-ARG USERNAME=HYUNWOOYUN
+ARG USERNAME=user
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
