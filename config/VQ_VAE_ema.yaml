@@ -1,0 +1,54 @@
+seed: 1265
+model:
+  name: 'VQ_VAE'
+  model_params:
+    in_channels: 3
+    hidden_channels: 
+      - 3
+      - 64
+      - 128
+      - 256
+    input_shape:
+      - 48
+      - 48
+    resBlock_depth: 2
+    dropout_rate: 0.1
+
+    K: 4096
+    D: 256
+    codebook_update_type: 'ema'
+    codebook_update_ratio: 0.9
+    recon_loss_type: "bce"
+    beta: 0.25
+
+data:
+  name: "CelebA"
+  data_path: "data/celeba-small-images-dataset"
+  train_batch_size: 256
+  val_batch_size:  128
+  # should match with model's end_point
+  patch_size: 48
+  num_workers: 4
+  pin_memory: true
+
+trainer:
+  device: "cuda"
+  max_epochs: 20
+  optim:
+      lr: 0.0003
+      weight_decay: 0.0
+  logging:
+    name: "VAE"
+    logging_step: 100
+  checkpoint:
+    save_dir: "./ckpt"
+    save_name: "VQ_VAE_ema"
+
+log:
+  train: 
+    extra_log: 
+      sampled_images: 'wandb_image_logger_vq_vae'
+    prefix: 'train'
+  test:
+    extra_log:
+    prefix: 'test'

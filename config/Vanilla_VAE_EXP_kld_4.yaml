@@ -40,3 +40,13 @@ trainer:
   checkpoint:
     save_dir: "./ckpt"
     save_name: "Vanilla_VAE_EXP_kld_4"
+
+log:
+  train: 
+    extra_log: 
+      sampled_images: 'wandb_image_logger_vanilla_vae'
+    prefix: 'train'
+  test:
+    extra_log:
+      fid_score: 'fid_logger_builder'
+    prefix: 'test'

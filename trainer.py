@@ -10,7 +10,7 @@ from torchsummary import summary
 import wandb
 
 
-from model import Vanilla_VAE
+from Vanillia_VAE import Vanilla_VAE
 
 #def train_log()
 
@@ -33,7 +33,7 @@ class VAE_Trainer():
 
     def configure_optimizers(self):
         print(self.config['optim'])
-        optimizer = optim.Adam(self.model.parameters(), **self.config['optim'])
+        optimizer = optim.Adam(filter(lambda p: p.requires_grad, self.model.parameters()), **self.config['optim'], )
         return optimizer
     
     def training_step(self, batch, batch_idx):

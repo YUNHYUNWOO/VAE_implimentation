@@ -12,10 +12,11 @@ import functools
 from dotenv  import load_dotenv
 
 from FID_calculator import FID_calculator
-from model import Vanilla_VAE
+from Vanillia_VAE import Vanilla_VAE
+from VQ_VAE import VQ_VAE
 from trainer import VAE_Trainer
 from data import DataPipeline
-from log import get_train_log_fn, get_test_log_fn
+from log import get_log_fn
 
 CONFIG_DIR = "./config/"
 parser = argparse.ArgumentParser()
@@ -63,12 +64,14 @@ def main():
    # model initialization
    if(config['model']['name'] == 'Vanilla_VAE'):
       model = Vanilla_VAE(**config['model']['model_params'])
+   if(config['model']['name'] == 'VQ_VAE'):
+      model = VQ_VAE(**config['model']['model_params'])
 
    # log functions
-   train_log = get_train_log_fn()
-
-   fid_calcuator = FID_calculator(data['test']['dataset'])
-   test_log = get_test_log_fn(fid_calcuator)
+   train_log = get_log_fn(config=config['log']['train'], data=data)
+   test_log = get_log_fn(config=config['log']['test'], data=data)
+   
+   # test_log = get_test_log_fn(fid_calcuator)
    # test_log = get_test_log_fn(None)
 
 
