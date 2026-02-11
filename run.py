@@ -12,8 +12,7 @@ import functools
 from dotenv  import load_dotenv
 
 from FID_calculator import FID_calculator
-from Vanillia_VAE import Vanilla_VAE
-from VQ_VAE import VQ_VAE
+from model import Vanilla_VAE, VQ_VAE
 from trainer import VAE_Trainer
 from data import DataPipeline
 from log import get_log_fn
@@ -64,8 +63,10 @@ def main():
    # model initialization
    if(config['model']['name'] == 'Vanilla_VAE'):
       model = Vanilla_VAE(**config['model']['model_params'])
-   if(config['model']['name'] == 'VQ_VAE'):
+   elif(config['model']['name'] == 'VQ_VAE'):
       model = VQ_VAE(**config['model']['model_params'])
+   elif(config['model']['name'] == 'VQ_VAE_Auto'):
+      model = VQ_VAE_Auto(**config['model']['model_params'])
 
    # log functions
    train_log = get_log_fn(config=config['log']['train'], data=data)

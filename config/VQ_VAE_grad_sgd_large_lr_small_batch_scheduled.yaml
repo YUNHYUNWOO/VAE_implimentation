@@ -1,0 +1,60 @@
+seed: 65
+model:
+  name: 'VQ_VAE'
+  model_params:
+    in_channels: 3
+    hidden_channels: 
+      - 3
+      - 64
+      - 128
+      - 256
+    input_shape:
+      - 48
+      - 48
+    resBlock_depth: 2
+    dropout_rate: 0.1
+    D: 256
+    beta: 0.25
+    codebook_type: 'grad'
+    codebook_param:
+      K: 4096
+      D: 256
+    recon_loss_type: "bce"
+    
+data:
+  name: "CelebA"
+  data_path: "data/celeba-small-images-dataset"
+  train_batch_size: 64
+  val_batch_size:  128
+  # should match with model's end_point
+  patch_size: 48
+  num_workers: 4
+  pin_memory: true
+
+trainer:
+  device: "cuda"
+  max_epochs: 20
+  optim:
+    name: "SGD"
+    param:
+      lr: 0.05
+      weight_decay: 0.0
+    scheduler:
+      name: "CosineAnnealingLR"
+      param:
+        T_max: 58000
+  logging:
+    name: "VAE"
+    logging_step: 400
+  checkpoint:
+    save_dir: "./ckpt"
+    save_name: "VQ_VAE_grad_sgd_large_lr_small_batch_scheduled"
+
+log:
+  train: 
+    extra_log: 
+      sampled_images: 'wandb_image_logger_vq_vae'
+    prefix: 'train'
+  test:
+    extra_log:
+    prefix: 'test'

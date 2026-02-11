@@ -9,9 +9,6 @@ from tqdm import tqdm
 from torchsummary import summary
 import wandb
 
-
-from Vanillia_VAE import Vanilla_VAE
-
 #def train_log()
 
 class VAE_Trainer():
@@ -29,20 +26,30 @@ class VAE_Trainer():
         self.val_log = val_log
 
         self.config = config
-        self.opt = self.configure_optimizers()
+        self.opt, self.scheduler = self.configure_optimizers()
 
     def configure_optimizers(self):
-        print(self.config['optim'])
-        optimizer = optim.Adam(filter(lambda p: p.requires_grad, self.model.parameters()), **self.config['optim'], )
-        return optimizer
+        print(self.config['optim'], flush=True)
+        optim_class = getattr(optim, self.config['optim']['name'])
+        assert optim_class != None 
+
+        optimizer = optim_class(filter(lambda p: p.requires_grad, self.model.parameters()), **self.config['optim']['param'], )
+        
+        if self.config['optim'].get('scheduler') != None:
+            scheduler_class = getattr(optim.lr_scheduler, self.config['optim']['scheduler']['name'])
+            assert scheduler_class != None
+
+            scheduler = scheduler_class(optimizer, **self.config['optim']['scheduler']['param'])        
+        else:
+            scheduler = None
+        
+        return optimizer, scheduler
     
     def training_step(self, batch, batch_idx):
         x = batch
         output = self.model(x)
         
-        loss = self.model.loss_fn(**output)
-        log_info = loss
-        loss = loss['loss']
+        loss, log_info = self.model.loss_fn(**output)
         return loss, log_info
 
     def validate_model(self, batch, batch_idx):
@@ -75,6 +82,7 @@ class VAE_Trainer():
         self.model.to(self.config['device'])
         total_step = 0
 
+
         for epoch in range(self.config['max_epochs']):
             for i, (x, _) in tqdm(enumerate(self.train_dataloader), desc=f"Epoch {epoch}: Training batches", total=len(self.train_dataloader)):
                 total_step += 1
@@ -83,8 +91,13 @@ class VAE_Trainer():
 
                 loss, log_info = self.training_step(x, i)
                 loss.backward()
+                
+                torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=5)
                 self.opt.step()
                 self.opt.zero_grad()
+                
+                if self.scheduler is not None:
+                    self.scheduler.step()
                 # logging
                 if total_step % self.config['logging']['logging_step'] == 0:
                     #default logging info contains

@@ -32,6 +32,8 @@ trainer:
   device: "cuda"
   max_epochs: 20
   optim:
+    name: Adam
+    param:
       lr: 0.0003
       weight_decay: 0.0
   logging:
@@ -50,3 +52,4 @@ log:
     extra_log:
       fid_score: 'fid_logger_builder'
     prefix: 'test'
+

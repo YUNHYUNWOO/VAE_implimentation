@@ -1,4 +1,4 @@
-seed: 1265
+seed: 65
 model:
   name: 'VQ_VAE'
   model_params:
@@ -13,14 +13,15 @@ model:
       - 48
     resBlock_depth: 2
     dropout_rate: 0.1
-
-    K: 4096
     D: 256
-    codebook_update_type: 'ema'
-    codebook_update_ratio: 0.9
-    recon_loss_type: "bce"
     beta: 0.25
-
+    codebook_type: 'ema'
+    codebook_param:
+      K: 4096
+      D: 256
+      update_ratio: 0.9
+    recon_loss_type: "bce"
+    
 data:
   name: "CelebA"
   data_path: "data/celeba-small-images-dataset"
@@ -35,6 +36,8 @@ trainer:
   device: "cuda"
   max_epochs: 20
   optim:
+    name: Adam
+    param:
       lr: 0.0003
       weight_decay: 0.0
   logging:
